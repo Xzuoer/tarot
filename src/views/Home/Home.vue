@@ -1,8 +1,8 @@
 <template>
   <section class="Home">
     <div class="text">
-      <h3>深呼吸，屏除杂念，开始你的塔罗占卜之旅</h3>
-      <Textarea v-model.trim="textValue" placeholder="STEP1：戳我输入你的问题（必须）" :disabled="loadingStatus" />
+      <h3>STEP1：请输入你的问题（必须）</h3>
+      <Textarea v-model.trim="textValue" placeholder="深呼吸，屏除杂念，戳我输入你的问题..." :disabled="loadingStatus" />
     </div>
     <template v-if="!loadingStatus">
       <h3 class="text nb">STEP2：请选择3张塔罗牌（必须）</h3>
