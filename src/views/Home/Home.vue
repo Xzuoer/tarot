@@ -21,7 +21,7 @@
         <AlertTitle>抽牌结果解析：</AlertTitle>
         <AlertDescription><p class="[&>p]:indent-8 [&>p]:pt-2" ref="typedText"></p></AlertDescription>
       </Alert>
-      <Button class="mt-4 ml-auto block w-max" @click="resetFn">重新开始</Button>
+      <Button class="mt-4 ml-auto block w-max" @click="resetFn">继续提问</Button>
     </div>
   </section>
 </template>
