@@ -1,11 +1,11 @@
 <template>
   <section class="Home">
     <div class="text">
-      <h3>深呼吸，屏除雜念，開始你的塔羅占卜之旅</h3>
-      <Textarea v-model.trim="textValue" placeholder="你要占卜的问题（必须）" :disabled="loadingStatus" />
+      <h3>深呼吸，屏除杂念，开始你的塔罗占卜之旅</h3>
+      <Textarea v-model.trim="textValue" placeholder="STEP1：先输入你要占卜的问题（必须）" :disabled="loadingStatus" />
     </div>
     <template v-if="!loadingStatus">
-      <h3 class="text nb">选3张卡牌（必须）</h3>
+      <h3 class="text nb">STEP2：选3张塔罗牌（必须）</h3>
       <div class="card-list" :class="{ active: selectCardArr.length }">
         <div class="card" :class="{ active: selectCardArr.includes(i) }" v-for="i in randomCard" :key="i" @click="selectCard(i)"></div>
       </div>
@@ -18,7 +18,7 @@
         <img :class="{ rever: i.isReversed }" :src="renderIMG(`${i.no}.jpg`)" v-for="i in selectCardArr" :key="i" />
       </div>
       <Alert class="mt-4" v-if="resStatus">
-        <AlertTitle>塔罗牌解析：</AlertTitle>
+        <AlertTitle>抽牌结果解析：</AlertTitle>
         <AlertDescription><p class="[&>p]:indent-8 [&>p]:pt-2" ref="typedText"></p></AlertDescription>
       </Alert>
       <Button class="mt-4 ml-auto block w-max" @click="resetFn">重新开始</Button>
