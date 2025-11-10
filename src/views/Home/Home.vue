@@ -2,10 +2,10 @@
   <section class="Home">
     <div class="text">
       <h3>深呼吸，屏除杂念，开始你的塔罗占卜之旅</h3>
-      <Textarea v-model.trim="textValue" placeholder="STEP1：先输入你要占卜的问题（必须）" :disabled="loadingStatus" />
+      <Textarea v-model.trim="textValue" placeholder="STEP1：戳我输入你的问题（必须）" :disabled="loadingStatus" />
     </div>
     <template v-if="!loadingStatus">
-      <h3 class="text nb">STEP2：选3张塔罗牌（必须）</h3>
+      <h3 class="text nb">STEP2：请选择3张塔罗牌（必须）</h3>
       <div class="card-list" :class="{ active: selectCardArr.length }">
         <div class="card" :class="{ active: selectCardArr.includes(i) }" v-for="i in randomCard" :key="i" @click="selectCard(i)"></div>
       </div>
