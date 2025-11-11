@@ -1,12 +1,12 @@
 <!-- TarotHome.vue -->
 <template>
   <section class="Home">
-    <!-- 星空闪烁层 -->
+    <!-- 星空画布 -->
     <div class="starfield" />
 
     <div class="text">
-      <!-- 新增图标 -->
-      <img src="@/assets/images/ip.gif" class="tarot-icon" alt="tarot-icon" />
+      <!-- 图标大小在路径旁直接写 40px -->
+      <img src="@/assets/images/ip.gif" width="40" alt="tarot-icon" />
 
       <h3>深呼吸，屏除杂念，开始你的塔罗解惑之旅</h3>
       <Textarea
@@ -16,7 +16,7 @@
       />
     </div>
 
-    <!-- 以下与原文件完全一致 -->
+    <!-- 以下与原文件一致，STEP2 文案居左 -->
     <template v-if="!loadingStatus">
       <h3 class="text nb">STEP2：请选择3张塔罗牌（必须）</h3>
       <div class="card-list" :class="{ active: selectCardArr.length }">
@@ -62,7 +62,7 @@
 </template>
 
 <script setup lang="ts">
-/* ========== 以下脚本与原文件完全一致，未动 ========== */
+/* 以下脚本与原文件完全一致，未动 */
 import { ref } from 'vue'
 import vh from 'vh-plugin'
 import { marked } from 'marked'
@@ -137,13 +137,11 @@ const renderIMG = (url: string) =>
 /* ① 原 Home.less 保持不动 */
 @import 'Home.less';
 
-/* ② 仅追加本次需求内容 */
-:root {
-  --icon-size: 40px; /* 图标大小可调 */
-}
-
+/* ② 仅追加本次需求 */
 .Home {
-  position: relative; /* 让伪元素绝对定位参照 */
+  position: relative; /* 让星空伪元素参照 */
+  min-height: 100vh;
+  background: #fff; /* 先白底，星空盖在上面 */
 }
 
 /* 星空闪烁 */
@@ -175,16 +173,8 @@ const renderIMG = (url: string) =>
   100% { opacity: 0.35; }
 }
 
-/* 图标居中 & 大小 */
-.text {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-.tarot-icon {
-  width: var(--icon-size);
-  height: auto;
-  margin-bottom: 16px;
-  user-select: none;
+/* STEP2 文案恢复居左（原 .text.nb 已有 margin-left 即可） */
+.text.nb {
+  align-self: flex-start; /* 若原样式已居左可省略 */
 }
 </style>
