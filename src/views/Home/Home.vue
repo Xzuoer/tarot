@@ -229,10 +229,7 @@ onUnmounted(() => cancelAnimationFrame(rafId))
 
 /* ② 仅追加本次需求内容 */
 .Home {
-  position: relative;
-  min-height: 100vh;
-  background: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%);
-  overflow: hidden;
+  background: #fff;   
 }
 
 /* 星空画布 */
