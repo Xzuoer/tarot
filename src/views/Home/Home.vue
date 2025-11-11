@@ -1,8 +1,6 @@
 <!-- TarotHome.vue -->
 <template>
   <section class="Home">
-    <!-- 星空画布已删除 -->
-
     <!-- 顶部区域：图片+标题 居中 -->
     <div class="head-center">
       <!-- 图片大小就在路径旁调 -->
@@ -65,7 +63,7 @@
 </template>
 
 <script setup lang="ts">
-/* ========== 以下脚本与原文件完全一致，已删除星空部分 ========== */
+/* ========== 以下脚本与原文件完全一致 ========== */
 import { ref } from 'vue'
 import vh from 'vh-plugin'
 import { marked } from 'marked'
@@ -140,15 +138,7 @@ const renderIMG = (url: string) =>
 /* ① 原 Home.less 保持不动 */
 @import 'Home.less';
 
-/* ② 仅追加本次需求内容（已去掉星空背景） */
-.Home {
-  position: relative;
-  min-height: 100vh;
-  background: #fff; /* 纯白背景 */
-  overflow: hidden;
-}
-
-/* 顶部图片+标题 居中 */
+/* ② 仅追加本次需求内容（无背景，只留居中+居左） */
 .head-center {
   position: relative;
   z-index: 1;
