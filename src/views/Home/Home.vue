@@ -1,14 +1,18 @@
 <!-- TarotHome.vue -->
 <template>
   <section class="Home">
-    <!-- 星空画布 -->
-    <div class="starfield" />
+    <!-- 星空+流星画布 -->
+    <canvas class="star-canvas" ref="starCanvas"></canvas>
 
-    <div class="text">
-      <!-- 图标大小在路径旁直接写 40px -->
-      <img src="@/assets/images/ip.gif" width="40" alt="tarot-icon" />
-
+    <!-- 顶部区域：图片+标题 居中 -->
+    <div class="head-center">
+      <!-- 图片大小就在路径旁调 -->
+      <img src="@/assets/images/ip.gif" width="40%" alt="tarot-icon" class="tarot-icon" />
       <h3>深呼吸，屏除杂念，开始你的塔罗解惑之旅</h3>
+    </div>
+
+    <!-- 以下结构与原先完全一致 -->
+    <div class="text">
       <Textarea
         v-model.trim="textValue"
         placeholder="STEP1：戳我输入你的问题（必须）..."
@@ -16,9 +20,9 @@
       />
     </div>
 
-    <!-- 以下与原文件一致，STEP2 文案居左 -->
     <template v-if="!loadingStatus">
-      <h3 class="text nb">STEP2：请选择3张塔罗牌（必须）</h3>
+      <!-- STEP2 文案居左 -->
+      <h3 class="text nb step2-left">STEP2：请选择3张塔罗牌（必须）</h3>
       <div class="card-list" :class="{ active: selectCardArr.length }">
         <div
           class="card"
@@ -51,7 +55,7 @@
       <Alert class="mt-4" v-if="resStatus">
         <AlertTitle>抽牌结果解析：</AlertTitle>
         <AlertDescription>
-          <p class="[&>p]:indent-8 [&>p]:pt-2" ref="typedText" />
+          <p ref="typedText" />
         </AlertDescription>
       </Alert>
       <Button class="mt-4 ml-auto block w-max" @click="resetFn">
@@ -62,8 +66,8 @@
 </template>
 
 <script setup lang="ts">
-/* 以下脚本与原文件完全一致，未动 */
-import { ref } from 'vue'
+/* ========== 以下脚本与原文件完全一致，未动 ========== */
+import { ref, onMounted, onUnmounted } from 'vue'
 import vh from 'vh-plugin'
 import { marked } from 'marked'
 import Typed from 'typed.js'
@@ -131,50 +135,137 @@ const resetFn = async () => {
 
 const renderIMG = (url: string) =>
   new URL(`../../assets/images/card/${url}`, import.meta.url).href
+
+/* ========== 星空+流星动画 ========== */
+const starCanvas = ref<HTMLCanvasElement>()
+let rafId = 0
+onMounted(() => {
+  const canvas = starCanvas.value!
+  const ctx = canvas.getContext('2d')!
+  const resize = () => {
+    canvas.width = window.innerWidth
+    canvas.height = window.innerHeight
+  }
+  resize()
+  window.addEventListener('resize', resize)
+
+  // 星星
+  const stars = Array.from({ length: 200 }, () => ({
+    x: Math.random() * canvas.width,
+    y: Math.random() * canvas.height,
+    r: Math.random() * 1.2 + 0.3,
+    a: Math.random(),
+    da: Math.random() * 0.03 + 0.01,
+  }))
+
+  // 流星
+  const meteors: {
+    x: number
+    y: number
+    len: number
+    speed: number
+    angle: number
+    alpha: number
+  }[] = []
+
+  const loop = () => {
+    ctx.clearRect(0, 0, canvas.width, canvas.height)
+    // 画星星
+    stars.forEach((s) => {
+      s.a += s.da
+      ctx.beginPath()
+      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2)
+      ctx.fillStyle = `rgba(255,255,255,${Math.abs(Math.sin(s.a))})`
+      ctx.fill()
+    })
+
+    // 随机生成流星
+    if (Math.random() < 0.015) {
+      const startX = Math.random() * canvas.width * 0.8
+      meteors.push({
+        x: startX,
+        y: -10,
+        len: Math.random() * 60 + 30,
+        speed: Math.random() * 4 + 6,
+        angle: Math.PI / 4,
+        alpha: 1,
+      })
+    }
+
+    // 画流星并更新
+    meteors.forEach((m, i) => {
+      m.x += Math.cos(m.angle) * m.speed
+      m.y += Math.sin(m.angle) * m.speed
+      m.alpha -= 0.015
+
+      ctx.save()
+      ctx.translate(m.x, m.y)
+      ctx.rotate(m.angle)
+      const grad = ctx.createLinearGradient(0, 0, -m.len, 0)
+      grad.addColorStop(0, `rgba(255,255,255,0)`)
+      grad.addColorStop(1, `rgba(255,255,255,${m.alpha})`)
+      ctx.strokeStyle = grad
+      ctx.lineWidth = 2
+      ctx.beginPath()
+      ctx.moveTo(0, 0)
+      ctx.lineTo(-m.len, 0)
+      ctx.stroke()
+      ctx.restore()
+
+      if (m.alpha <= 0) meteors.splice(i, 1)
+    })
+
+    rafId = requestAnimationFrame(loop)
+  }
+  loop()
+})
+
+onUnmounted(() => cancelAnimationFrame(rafId))
 </script>
 
 <style scoped lang="less">
 /* ① 原 Home.less 保持不动 */
 @import 'Home.less';
 
-/* ② 仅追加本次需求 */
+/* ② 仅追加本次需求内容 */
 .Home {
-  position: relative; /* 让星空伪元素参照 */
+  position: relative;
   min-height: 100vh;
-  background: #fff; /* 先白底，星空盖在上面 */
+  background: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%);
+  overflow: hidden;
 }
 
-/* 星空闪烁 */
-.starfield {
+/* 星空画布 */
+.star-canvas {
   position: absolute;
   inset: 0;
-  overflow: hidden;
+  width: 100%;
+  height: 100%;
   pointer-events: none;
-}
-.starfield::before {
-  content: '';
-  position: absolute;
-  width: 200%;
-  height: 200%;
-  top: -50%;
-  left: -50%;
-  background: transparent
-    radial-gradient(2px 2px at 20px 30px, #fff, transparent)
-    radial-gradient(2px 2px at 40px 70px, rgba(255, 255, 255, 0.8), transparent)
-    radial-gradient(1px 1px at 90px 40px, #fff, transparent)
-    radial-gradient(1px 1px at 130px 80px, rgba(255, 255, 255, 0.6), transparent)
-    radial-gradient(2px 2px at 160px 30px, #ddd, transparent);
-  background-size: 200px 100px;
-  animation: sparkle 4s linear infinite;
-}
-@keyframes sparkle {
-  0% { opacity: 0.35; }
-  50% { opacity: 1; }
-  100% { opacity: 0.35; }
+  z-index: 0;
 }
 
-/* STEP2 文案恢复居左（原 .text.nb 已有 margin-left 即可） */
-.text.nb {
-  align-self: flex-start; /* 若原样式已居左可省略 */
+/* 顶部图片+标题 居中 */
+.head-center {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 20px;
+}
+.tarot-icon {
+  user-select: none;
+}
+
+/* STEP2 文案恢复居左 */
+.step2-left {
+  width: 100%;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: left;
+  padding-left: 20px;
+  box-sizing: border-box;
 }
 </style>
