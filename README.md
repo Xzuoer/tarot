@@ -21,6 +21,5 @@
 
 
 
-### 具体部署步骤详情
-
-https://www.vvhan.com/article/kaiyuan-tarot
+### 演示地址：
+http://tarot.ouoapp.com/
