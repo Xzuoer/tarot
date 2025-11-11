@@ -139,7 +139,7 @@ const renderIMG = (url: string) =>
 
 /* ② 仅追加本次需求内容 */
 :root {
-  --icon-size: 100px; /* 图标大小可调 */
+  --icon-size: 50px; /* 图标大小可调 */
 }
 
 .Home {
