@@ -1,8 +1,7 @@
 <!-- TarotHome.vue -->
 <template>
   <section class="Home">
-    <!-- 星空+流星画布 -->
-    <canvas class="star-canvas" ref="starCanvas"></canvas>
+    <!-- 星空画布已删除 -->
 
     <!-- 顶部区域：图片+标题 居中 -->
     <div class="head-center">
@@ -66,8 +65,8 @@
 </template>
 
 <script setup lang="ts">
-/* ========== 以下脚本与原文件完全一致，未动 ========== */
-import { ref, onMounted, onUnmounted } from 'vue'
+/* ========== 以下脚本与原文件完全一致，已删除星空部分 ========== */
+import { ref } from 'vue'
 import vh from 'vh-plugin'
 import { marked } from 'marked'
 import Typed from 'typed.js'
@@ -135,111 +134,18 @@ const resetFn = async () => {
 
 const renderIMG = (url: string) =>
   new URL(`../../assets/images/card/${url}`, import.meta.url).href
-
-/* ========== 星空+流星动画 ========== */
-const starCanvas = ref<HTMLCanvasElement>()
-let rafId = 0
-onMounted(() => {
-  const canvas = starCanvas.value!
-  const ctx = canvas.getContext('2d')!
-  const resize = () => {
-    canvas.width = window.innerWidth
-    canvas.height = window.innerHeight
-  }
-  resize()
-  window.addEventListener('resize', resize)
-
-  // 星星
-  const stars = Array.from({ length: 200 }, () => ({
-    x: Math.random() * canvas.width,
-    y: Math.random() * canvas.height,
-    r: Math.random() * 1.2 + 0.3,
-    a: Math.random(),
-    da: Math.random() * 0.03 + 0.01,
-  }))
-
-  // 流星
-  const meteors: {
-    x: number
-    y: number
-    len: number
-    speed: number
-    angle: number
-    alpha: number
-  }[] = []
-
-  const loop = () => {
-    ctx.clearRect(0, 0, canvas.width, canvas.height)
-    // 画星星
-    stars.forEach((s) => {
-      s.a += s.da
-      ctx.beginPath()
-      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2)
-      ctx.fillStyle = `rgba(255,255,255,${Math.abs(Math.sin(s.a))})`
-      ctx.fill()
-    })
-
-    // 随机生成流星
-    if (Math.random() < 0.015) {
-      const startX = Math.random() * canvas.width * 0.8
-      meteors.push({
-        x: startX,
-        y: -10,
-        len: Math.random() * 60 + 30,
-        speed: Math.random() * 4 + 6,
-        angle: Math.PI / 4,
-        alpha: 1,
-      })
-    }
-
-    // 画流星并更新
-    meteors.forEach((m, i) => {
-      m.x += Math.cos(m.angle) * m.speed
-      m.y += Math.sin(m.angle) * m.speed
-      m.alpha -= 0.015
-
-      ctx.save()
-      ctx.translate(m.x, m.y)
-      ctx.rotate(m.angle)
-      const grad = ctx.createLinearGradient(0, 0, -m.len, 0)
-      grad.addColorStop(0, `rgba(255,255,255,0)`)
-      grad.addColorStop(1, `rgba(255,255,255,${m.alpha})`)
-      ctx.strokeStyle = grad
-      ctx.lineWidth = 2
-      ctx.beginPath()
-      ctx.moveTo(0, 0)
-      ctx.lineTo(-m.len, 0)
-      ctx.stroke()
-      ctx.restore()
-
-      if (m.alpha <= 0) meteors.splice(i, 1)
-    })
-
-    rafId = requestAnimationFrame(loop)
-  }
-  loop()
-})
-
-onUnmounted(() => cancelAnimationFrame(rafId))
 </script>
 
 <style scoped lang="less">
 /* ① 原 Home.less 保持不动 */
 @import 'Home.less';
 
-/* ② 仅追加本次需求内容 */
+/* ② 仅追加本次需求内容（已去掉星空背景） */
 .Home {
-  background: #fff;   
-}
-
-/* 星空画布 */
-.star-canvas {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: 0;
+  position: relative;
+  min-height: 100vh;
+  background: #fff; /* 纯白背景 */
+  overflow: hidden;
 }
 
 /* 顶部图片+标题 居中 */
